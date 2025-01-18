@@ -1,9 +1,9 @@
+import { FileUploadComponent } from './shared/components/file-upload/file-upload.component';
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [FileUploadComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
