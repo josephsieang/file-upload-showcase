@@ -1,0 +1,15 @@
+// Setting editor.defaultFormatter is not suffient to set the default formatter for all languages in some developer machine. We need to set the formatter for each language you want to use Prettier with to force every developer machine to use Prettier as the default formatter for that language.
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "files.insertFinalNewline": true,
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
