@@ -1,6 +1,8 @@
 export interface UploadFile {
   file: File;
   progress: number;
-  status: 'pending' | 'uploading' | 'done' | 'error';
+  status: UploadStatus;
   id: string;
 }
+
+export type UploadStatus = 'pending' | 'uploading' | 'done' | 'error';
