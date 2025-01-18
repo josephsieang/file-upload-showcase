@@ -21,10 +21,10 @@ export const createFilenameValidator = (existingFiles: File[]): FileValidator =>
   });
 };
 
-export const createFilenamePatternValidator = (pattern: RegExp): FileValidator => {
-  return (file: File): ValidationResult => ({
-    isValid: pattern.test(file.name),
-    error: !pattern.test(file.name) ? `Filename doesn't match required pattern` : undefined
+export const createFileCountValidator = (maxFiles: number, existingFiles: File[]): FileValidator => {
+  return (_file: File): ValidationResult => ({
+    isValid: existingFiles.length < maxFiles,
+    error: existingFiles.length >= maxFiles ? `Maximum number of files exceeded` : undefined
   });
 };
 
