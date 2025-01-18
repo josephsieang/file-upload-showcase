@@ -34,16 +34,6 @@ export class FileUploadComponent {
   files: UploadFile[] = [];
   isDragging = false;
 
-  private validator = composeFileValidators(
-    createMaxSizeValidator(this.maxFileSizeMb() * 1024 * 1024),
-    createFileTypeValidator(
-      this.acceptedFileTypes()
-        .map((ext) => extensionToMimeType(ext))
-        .filter((mime) => mime !== '')
-    ),
-    createFilenameValidator(this.files.map((f) => f.file))
-  );
-
   onDragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -163,7 +153,15 @@ export class FileUploadComponent {
 
   private handleFiles(newFiles: File[]) {
     newFiles.forEach((file) => {
-      const validationResult = this.validator(file);
+      const validationResult = composeFileValidators(
+        createMaxSizeValidator(this.maxFileSizeMb() * 1024 * 1024),
+        createFileTypeValidator(
+          this.acceptedFileTypes()
+            .map((ext) => extensionToMimeType(ext))
+            .filter((mime) => mime !== '')
+        ),
+        createFilenameValidator(this.files.map((f) => f.file))
+      )(file);
 
       if (validationResult.isValid) {
         this.files.push({
