@@ -1,1 +1,73 @@
-<p>file-upload works!</p>
+<div
+  class="upload-container"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  (drop)="onDrop($event)"
+  [ngClass]="{
+    'd-flex align-items-center justify-content-center flex-column': files.length === 0,
+    'drag-over': isDragging
+  }"
+>
+  <!-- Upload Zone -->
+  @if (files.length === 0) {
+    <div class="upload-zone">
+      <div class="upload-icon">
+        <i class="fas fa-cloud-upload-alt"></i>
+      </div>
+      <h3>Drag & Drop Files Here</h3>
+      <p>or</p>
+      <label class="upload-button">
+        Choose Files
+        <input
+          type="file"
+          [multiple]="allowMultiple()"
+          (change)="onFileSelected($event)"
+          [accept]="acceptedFileTypes().join(',')"
+        />
+      </label>
+      <p class="upload-hints">
+        Maximum file size: {{ maxFileSizeMb() }}MB<br />
+        Accepted files: {{ getAcceptedTypesDisplay() }}
+      </p>
+    </div>
+  }
+
+  <!-- File List -->
+  @if (files.length > 0) {
+    <div class="file-list">
+      @for (file of files; track file) {
+        <div class="file-item" [@fileAnimation]>
+          <!-- File Type Icon -->
+          <div class="file-icon">
+            <i [class]="getFileIcon(file.file)"></i>
+          </div>
+          <!-- File Info -->
+          <div class="file-info">
+            <div class="file-name">{{ file.file.name }}</div>
+            <div class="file-size">{{ formatFileSize(file.file.size) }}</div>
+            <!-- Progress Bar -->
+            @if (file.status === 'uploading') {
+              <div class="progress-bar">
+                <div class="progress" [style.width.%]="file.progress"></div>
+              </div>
+            }
+            <!-- Status -->
+            <div class="file-status" [class]="file.status">
+              {{ getStatusText(file.status) }}
+            </div>
+          </div>
+          <!-- Actions -->
+          <div class="file-actions">
+            <button class="remove-button" (click)="removeFile(file.id)">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      }
+      <!-- Upload All Button -->
+      @if (hasPendingFiles()) {
+        <button class="upload-all-button" (click)="uploadFiles()">Upload All Files</button>
+      }
+    </div>
+  }
+</div>
