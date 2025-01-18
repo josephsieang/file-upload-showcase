@@ -4,6 +4,20 @@ This showcase is a POC for file upload drag & drop feature. Below are the essent
 
 ---
 
+## Features
+
+- Drag & Drop file upload
+- Select file upload
+- File upload progress
+- File upload status
+- File validation
+  - File count limit
+  - Max file size
+  - File type
+  - Duplicate filename
+
+---
+
 ## Prerequisites
 
 Ensure you have the following installed:
@@ -44,20 +58,6 @@ npm start
 ```
 
 Navigate to `http://localhost:4200/` to view the application.
-
----
-
-## Features
-
-- Drag & Drop file upload
-- Select file upload
-- File upload progress
-- File upload status
-- File validation
-  - File count limit
-  - Max file size
-  - File type
-  - Duplicate filename
 
 ---
 
