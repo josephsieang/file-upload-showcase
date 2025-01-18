@@ -2,7 +2,8 @@ import {
   composeFileValidators,
   createMaxSizeValidator,
   createFileTypeValidator,
-  createFilenameValidator
+  createFilenameValidator,
+  createFileCountValidator
 } from '../../../core/utilities/file-validators';
 import { extensionToMimeType, transformBytesToSize } from '../../../core/utilities';
 import { trigger, style, animate, transition } from '@angular/animations';
@@ -28,7 +29,7 @@ import { CommonModule } from '@angular/common';
 export class FileUploadComponent {
   readonly maxFileSizeMb = input(1);
   readonly acceptedFileTypes = input(['.jpg', '.jpeg', '.png', '.pdf', '.txt']);
-  readonly allowMultiple = input(true);
+  readonly allowMultiple = input(false);
   readonly filesChanged = output<File[]>();
 
   files: UploadFile[] = [];
@@ -154,6 +155,10 @@ export class FileUploadComponent {
   private handleFiles(newFiles: File[]) {
     newFiles.forEach((file) => {
       const validationResult = composeFileValidators(
+        createFileCountValidator(
+          this.allowMultiple() ? Infinity : 1,
+          this.files.map((f) => f.file)
+        ),
         createMaxSizeValidator(this.maxFileSizeMb() * 1024 * 1024),
         createFileTypeValidator(
           this.acceptedFileTypes()
