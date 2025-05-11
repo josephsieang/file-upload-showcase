@@ -1,15 +1,16 @@
 import { trigger, style, animate, transition } from '@angular/animations';
-import { CommonModule } from '@angular/common';
 import { Component, input, output } from '@angular/core';
-import { UploadFile, UploadStatus } from '../../../core/models';
-import { extensionToMimeType, transformBytesToSize } from '../../../core/utilities';
+import { CommonModule } from '@angular/common';
 import {
   composeFileValidators,
   createMaxSizeValidator,
   createFileTypeValidator,
   createFilenameValidator,
-  createFileCountValidator
+  createFileCountValidator,
+  parsingFileValidationError
 } from '../../../core/utilities/file-validators';
+import { extensionToMimeType, transformBytesToSize } from '../../../core/utilities';
+import { UploadFile, UploadStatus } from '../../../core/models';
 
 @Component({
   selector: 'app-file-upload',
@@ -177,7 +178,7 @@ export class FileUploadComponent {
         });
       } else {
         // Show error using your preferred notification system
-        // alert(validationResult.error);
+        alert(parsingFileValidationError(validationResult));
       }
     });
 

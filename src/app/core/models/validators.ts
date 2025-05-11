@@ -6,7 +6,7 @@ interface ValidationSuccess {
   isValid: true;
 }
 
-interface ValidationFailure {
+export interface ValidationFailure {
   isValid: false;
   errorType: FileValidationErrorType; // A machine-readable error identifier
   details?: Record<string, any>; // Optional additional context

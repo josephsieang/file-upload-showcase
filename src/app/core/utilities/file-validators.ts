@@ -1,5 +1,6 @@
+import { FileValidator, ValidationFailure, ValidationResult } from '../models';
+import { transformBytesToSize } from './transform-bytes-to-size';
 import { FileValidationErrorType } from '../enums';
-import { FileValidator, ValidationResult } from '../models';
 
 export const createMaxSizeValidator = (maxSize: number): FileValidator => {
   return (file: File): ValidationResult => {
@@ -8,8 +9,8 @@ export const createMaxSizeValidator = (maxSize: number): FileValidator => {
         isValid: file.size <= maxSize,
         errorType: FileValidationErrorType.MaxSizeExceeded,
         details: {
-          maxSize: maxSize,
-          actualSize: file.size
+          maxSize: transformBytesToSize(maxSize),
+          actualSize: transformBytesToSize(file.size)
         }
       };
     }
@@ -75,3 +76,32 @@ export const composeFileValidators = (...validators: FileValidator[]): FileValid
     return { isValid: true };
   };
 };
+
+const formatMaxSizeExceeded = (details: any) =>
+  `File size exceeds the maximum limit of ${details?.['maxSize']}. Actual size: ${details?.['actualSize']}.`;
+
+const formatFileTypeNotAllowed = (details: any) =>
+  `File type "${details?.['fileType']}" is not allowed. Allowed types: ${details?.['allowedTypes']?.join(', ')}.`;
+
+const formatFilenameAlreadyExists = (details: any) =>
+  `Filename "${details?.['filename']}" already exists. Please choose a different name.`;
+
+const formatMaxFileCountExceeded = (details: any) =>
+  `Maximum file count exceeded. Current count: ${details?.['currentCount']}, Maximum allowed: ${details?.['maxCount']}.`;
+
+const formatFilenameNotAllowed = (details: any) =>
+  `Filename "${details?.['filename']}" already exists. Please choose a different name.`;
+
+const formatUnknownError = (details: any) => `Unknown error occurred. Details: ${JSON.stringify(details)}`;
+
+const errorFormatters: Record<FileValidationErrorType, (details: any) => string> = {
+  [FileValidationErrorType.MaxSizeExceeded]: formatMaxSizeExceeded,
+  [FileValidationErrorType.FileTypeNotAllowed]: formatFileTypeNotAllowed,
+  [FileValidationErrorType.FilenameAlreadyExists]: formatFilenameAlreadyExists,
+  [FileValidationErrorType.MaxFileCountExceeded]: formatMaxFileCountExceeded,
+  [FileValidationErrorType.FilenameNotAllowed]: formatFilenameNotAllowed,
+  [FileValidationErrorType.UnknownError]: formatUnknownError
+};
+
+export const parsingFileValidationError = (error: ValidationFailure): string =>
+  errorFormatters[error.errorType](error.details);
