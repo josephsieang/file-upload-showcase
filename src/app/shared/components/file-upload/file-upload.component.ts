@@ -29,7 +29,7 @@ import {
 export class FileUploadComponent {
   readonly maxFileSizeMb = input(1);
   readonly acceptedFileTypes = input(['.jpg', '.jpeg', '.png', '.pdf']);
-  readonly allowMultiple = input(false);
+  readonly allowMultiple = input(true);
   readonly filesChanged = output<File[]>();
 
   files: UploadFile[] = [];
