@@ -1,3 +1,11 @@
+import {
+  MaxSizeExceededDetails,
+  FileTypeNotAllowedDetails,
+  FilenameAlreadyExistsDetails,
+  MaxFileCountExceededDetails,
+  FilenameNotAllowedDetails,
+  UnknownErrorDetails
+} from '../models/validators';
 import { FileValidator, ValidationFailure, ValidationResult } from '../models';
 import { transformBytesToSize } from './transform-bytes-to-size';
 import { FileValidationErrorType } from '../enums';
@@ -77,22 +85,23 @@ export const composeFileValidators = (...validators: FileValidator[]): FileValid
   };
 };
 
-const formatMaxSizeExceeded = (details: any) =>
-  `File size exceeds the maximum limit of ${details?.['maxSize']}. Actual size: ${details?.['actualSize']}.`;
+const formatMaxSizeExceeded = (details: MaxSizeExceededDetails) =>
+  `File size exceeds the maximum limit of ${details.maxSize}. Actual size: ${details.actualSize}.`;
 
-const formatFileTypeNotAllowed = (details: any) =>
-  `File type "${details?.['fileType']}" is not allowed. Allowed types: ${details?.['allowedTypes']?.join(', ')}.`;
+const formatFileTypeNotAllowed = (details: FileTypeNotAllowedDetails) =>
+  `File type "${details.fileType}" is not allowed. Allowed types: ${details.allowedTypes.join(', ')}.`;
 
-const formatFilenameAlreadyExists = (details: any) =>
-  `Filename "${details?.['filename']}" already exists. Please choose a different name.`;
+const formatFilenameAlreadyExists = (details: FilenameAlreadyExistsDetails) =>
+  `Filename "${details.filename}" already exists. Please choose a different name.`;
 
-const formatMaxFileCountExceeded = (details: any) =>
-  `Maximum file count exceeded. Current count: ${details?.['currentCount']}, Maximum allowed: ${details?.['maxCount']}.`;
+const formatMaxFileCountExceeded = (details: MaxFileCountExceededDetails) =>
+  `Maximum file count exceeded. Current count: ${details.currentCount}, Maximum allowed: ${details.maxCount}.`;
 
-const formatFilenameNotAllowed = (details: any) =>
-  `Filename "${details?.['filename']}" already exists. Please choose a different name.`;
+const formatFilenameNotAllowed = (details: FilenameNotAllowedDetails) =>
+  `Filename "${details.filename}" already exists. Please choose a different name.`;
 
-const formatUnknownError = (details: any) => `Unknown error occurred. Details: ${JSON.stringify(details)}`;
+const formatUnknownError = (details: UnknownErrorDetails) =>
+  `Unknown error occurred. Details: ${JSON.stringify(details)}`;
 
 const errorFormatters: Record<FileValidationErrorType, (details: any) => string> = {
   [FileValidationErrorType.MaxSizeExceeded]: formatMaxSizeExceeded,
