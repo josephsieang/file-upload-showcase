@@ -37,6 +37,4 @@ export interface FilenameNotAllowedDetails {
   filename: string;
 }
 
-export interface UnknownErrorDetails {
-  [key: string]: any;
-}
+export type UnknownErrorDetails = Record<string, any>;
