@@ -1,31 +1,67 @@
+import { FileValidationErrorType } from '../enums';
 import { FileValidator, ValidationResult } from '../models';
 
 export const createMaxSizeValidator = (maxSize: number): FileValidator => {
-  return (file: File): ValidationResult => ({
-    isValid: file.size <= maxSize,
-    error: file.size > maxSize ? `File size must not exceed ${maxSize / 1024 / 1024}MB` : undefined
-  });
+  return (file: File): ValidationResult => {
+    if (file.size > maxSize) {
+      return {
+        isValid: file.size <= maxSize,
+        errorType: FileValidationErrorType.MaxSizeExceeded,
+        details: {
+          maxSize: maxSize,
+          actualSize: file.size
+        }
+      };
+    }
+    return { isValid: true };
+  };
 };
 
 export const createFileTypeValidator = (allowedTypes: string[]): FileValidator => {
-  return (file: File): ValidationResult => ({
-    isValid: allowedTypes.includes(file.type),
-    error: !allowedTypes.includes(file.type) ? `File type ${file.type} is not allowed` : undefined
-  });
+  return (file: File): ValidationResult => {
+    if (!allowedTypes.includes(file.type)) {
+      return {
+        isValid: false,
+        errorType: FileValidationErrorType.FileTypeNotAllowed,
+        details: {
+          fileType: file.type,
+          allowedTypes
+        }
+      };
+    }
+    return { isValid: true };
+  };
 };
 
 export const createFilenameValidator = (existingFiles: File[]): FileValidator => {
-  return (file: File): ValidationResult => ({
-    isValid: !existingFiles.some((f) => f.name === file.name),
-    error: existingFiles.some((f) => f.name === file.name) ? `File ${file.name} already exists` : undefined
-  });
+  return (file: File): ValidationResult => {
+    if (existingFiles.some((f) => f.name === file.name)) {
+      return {
+        isValid: false,
+        errorType: FileValidationErrorType.FilenameAlreadyExists,
+        details: {
+          filename: file.name
+        }
+      };
+    }
+    return { isValid: true };
+  };
 };
 
 export const createFileCountValidator = (maxFiles: number, existingFiles: File[]): FileValidator => {
-  return (_file: File): ValidationResult => ({
-    isValid: existingFiles.length < maxFiles,
-    error: existingFiles.length >= maxFiles ? `Maximum number of files exceeded` : undefined
-  });
+  return (_file: File): ValidationResult => {
+    if (existingFiles.length >= maxFiles) {
+      return {
+        isValid: false,
+        errorType: FileValidationErrorType.MaxFileCountExceeded,
+        details: {
+          currentCount: existingFiles.length,
+          maxCount: maxFiles
+        }
+      };
+    }
+    return { isValid: true };
+  };
 };
 
 export const composeFileValidators = (...validators: FileValidator[]): FileValidator => {

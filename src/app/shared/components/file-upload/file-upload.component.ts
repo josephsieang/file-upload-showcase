@@ -1,3 +1,8 @@
+import { trigger, style, animate, transition } from '@angular/animations';
+import { CommonModule } from '@angular/common';
+import { Component, input, output } from '@angular/core';
+import { UploadFile, UploadStatus } from '../../../core/models';
+import { extensionToMimeType, transformBytesToSize } from '../../../core/utilities';
 import {
   composeFileValidators,
   createMaxSizeValidator,
@@ -5,11 +10,6 @@ import {
   createFilenameValidator,
   createFileCountValidator
 } from '../../../core/utilities/file-validators';
-import { extensionToMimeType, transformBytesToSize } from '../../../core/utilities';
-import { trigger, style, animate, transition } from '@angular/animations';
-import { UploadFile, UploadStatus } from '../../../core/models';
-import { Component, input, output } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-file-upload',
@@ -28,7 +28,7 @@ import { CommonModule } from '@angular/common';
 })
 export class FileUploadComponent {
   readonly maxFileSizeMb = input(1);
-  readonly acceptedFileTypes = input(['.jpg', '.jpeg', '.png', '.pdf', '.txt']);
+  readonly acceptedFileTypes = input(['.jpg', '.jpeg', '.png', '.pdf']);
   readonly allowMultiple = input(false);
   readonly filesChanged = output<File[]>();
 
@@ -177,7 +177,7 @@ export class FileUploadComponent {
         });
       } else {
         // Show error using your preferred notification system
-        alert(validationResult.error);
+        // alert(validationResult.error);
       }
     });
 
